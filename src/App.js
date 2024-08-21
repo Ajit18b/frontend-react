@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import LoginRegdMain from "./LoginRegd/LoginRegdMain";
+import Dashboard from "./Landing/Dashboard";
 
 function App() {
   return (
@@ -8,8 +9,8 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<LoginRegdMain />} />
-          <Route path="/dashboard" element={<></>} />
-          {/* Add more routes as needed */}
+          <Route path="/login" element={<LoginRegdMain />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>

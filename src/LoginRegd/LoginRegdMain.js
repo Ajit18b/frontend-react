@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Style.css";
-import SignInForm from "./Components/LoginPage";
-import SignUpForm from "./Components/RegistrationPage";
+import SignInForm from "./Components/SignInForm";
+import SignUpForm from "./Components/SignUpForm";
+import SuccessMessage from "./../Animations/SuccessMessage"; // Import the SuccessMessage component
 
 export default function LoginRegdMain() {
-  const [type, setType] = useState("signIn");
   const navigate = useNavigate();
+  const [type, setType] = useState(
+    localStorage.getItem("authType") || "signIn"
+  ); // Retrieve the state from localStorage
+  const [showSuccess, setShowSuccess] = useState(false); // State to manage success message visibility
+
+  useEffect(() => {
+    localStorage.setItem("authType", type); // Store the current type in localStorage
+  }, [type]);
 
   const handleOnClick = (text) => {
     if (text !== type) {
@@ -16,6 +24,15 @@ export default function LoginRegdMain() {
 
   const handleLoginSuccess = () => {
     navigate("/dashboard"); // Redirect to the dashboard or another route
+  };
+
+  const handleSignUpSuccess = () => {
+    setShowSuccess(true); // Show success message
+    setType("signIn"); // Reset to login view after successful registration
+  };
+
+  const handleCloseSuccessMessage = () => {
+    setShowSuccess(false); // Hide success message
   };
 
   const containerClass =
@@ -28,7 +45,9 @@ export default function LoginRegdMain() {
         {type === "signIn" && (
           <SignInForm onLoginSuccess={handleLoginSuccess} />
         )}
-        {type === "signUp" && <SignUpForm />}
+        {type === "signUp" && (
+          <SignUpForm onSignUpSuccess={handleSignUpSuccess} />
+        )}
         <div className="overlay-container">
           <div className="overlay">
             <div className="overlay-panel overlay-left">
@@ -58,6 +77,12 @@ export default function LoginRegdMain() {
           </div>
         </div>
       </div>
+      {showSuccess && (
+        <SuccessMessage
+          message="Registration successful! Please login to access your account"
+          onClose={handleCloseSuccessMessage}
+        />
+      )}
     </div>
   );
 }
